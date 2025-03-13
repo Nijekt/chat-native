@@ -5,6 +5,8 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  ScrollView,
+  Keyboard,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -38,9 +40,7 @@ const ChatRoom = () => {
   const [messages, setMessages] = useState<DocumentData[]>([]);
   const textRef = useRef("");
   const inputRef = useRef(null);
-
-  // console.log("ITEM:", item);
-  // console.log("USER:", user);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     createRoomIfNotExists();
@@ -57,8 +57,28 @@ const ChatRoom = () => {
 
       setMessages([...allMessages]);
     });
-    return unsub;
+
+    const KeyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      updateScrollView
+    );
+
+    return () => {
+      unsub();
+      KeyboardDidShowListener.remove();
+    };
+    // return unsub;
   }, []);
+
+  useEffect(() => {
+    updateScrollView();
+  }, [messages]);
+
+  const updateScrollView = () => {
+    setTimeout(() => {
+      scrollViewRef?.current?.scrollToEnd({ animated: false });
+    }, 100);
+  };
 
   const createRoomIfNotExists = async () => {
     let roomId = getRoomID(user?.uid, item?.userId);
@@ -95,15 +115,17 @@ const ChatRoom = () => {
     }
   };
 
-  console.log("MESSAGES:", messages);
-
   return (
     <View className="flex-1 bg-white">
       <StatusBar barStyle={"dark-content"} backgroundColor={"transparent"} />
       <ChatRoomHeader user={item} router={router} />
       <View className="flex-1 justify-between bg-neutral-100 overflow-visible">
         <View className="flex-1">
-          <MessagesList />
+          <MessagesList
+            scrollViewRef={scrollViewRef}
+            messages={messages}
+            currentUser={user}
+          />
         </View>
         <View style={{ marginBottom: hp(1.7) }} className="pt-2">
           {/* <View className="flex-row justify-between items-center mx-3"> */}

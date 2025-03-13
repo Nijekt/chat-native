@@ -5,9 +5,10 @@ import { useRouter } from "expo-router";
 
 type Props = {
   users: any;
+  currentUser: any;
 };
 
-const ChatList: FC<Props> = ({ users }) => {
+const ChatList: FC<Props> = ({ currentUser, users }) => {
   const router = useRouter();
   return (
     <View className="flex-1">
@@ -22,6 +23,7 @@ const ChatList: FC<Props> = ({ users }) => {
             router={router}
             item={item}
             index={index}
+            currentUser={currentUser}
           />
         )}
       />

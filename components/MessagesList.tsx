@@ -1,11 +1,24 @@
-import { View, Text } from "react-native";
-import React from "react";
+import { View, Text, ScrollViewComponent, ScrollView } from "react-native";
+import React, { FC } from "react";
+import MessageItem from "./MessageItem";
 
-const MessagesList = () => {
+type Prop = {
+  messages: any;
+  currentUser: any;
+  scrollViewRef: any;
+};
+
+const MessagesList: FC<Prop> = ({ scrollViewRef, messages, currentUser }) => {
   return (
-    <View>
-      <Text>MessageList</Text>
-    </View>
+    <ScrollView
+      ref={scrollViewRef}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingTop: 20 }}
+    >
+      {messages.map((message: any, index: number) => (
+        <MessageItem message={message} key={index} currentUser={currentUser} />
+      ))}
+    </ScrollView>
   );
 };
 

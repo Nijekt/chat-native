@@ -28,7 +28,7 @@ const HomePage = () => {
   return (
     <View className="flex-1">
       {users.length > 0 ? (
-        <ChatList users={users} />
+        <ChatList currentUser={user} users={users} />
       ) : (
         <View className="flex-1 justify-center items-center">
           <ActivityIndicator size={"large"} color={"gray"} />
